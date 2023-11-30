@@ -17,16 +17,24 @@ giga_password = st.secrets["GIGACHAT_PASSWORD"]
 giga_url = st.secrets["GIGACHAT_BASE_URL"]
 
 with st.sidebar:
-    models = gigachat.GigaChat(
-        verify_ssl_certs=False,
-        user=giga_user,
-        password=giga_password,
-        base_url=giga_url,
-    ).get_models().data
+    models = (
+        gigachat.GigaChat(
+            verify_ssl_certs=False,
+            user=giga_user,
+            password=giga_password,
+            base_url=giga_url,
+        )
+        .get_models()
+        .data
+    )
     model_name = st.selectbox("Модель", options=[_.id_ for _ in models])
-    temperature = st.number_input("Температура", min_value=0.001, max_value=10.0, value=1.0)
+    temperature = st.number_input(
+        "Температура", min_value=0.001, max_value=10.0, value=1.0
+    )
     top_p = st.number_input("top-p", min_value=0.0, max_value=1.0, value=0.5)
-    max_tokens = st.number_input("Максимум токенов в ответе", min_value=1, max_value=1024, value=200)
+    max_tokens = st.number_input(
+        "Максимум токенов в ответе", min_value=1, max_value=1024, value=200
+    )
     system_prompt = st.text_area(
         "Системный промпт",
         value="Ты - дружелюбный голосовой ассистент ГигаЧат. Поддерживай приятный диалог с пользователем",
@@ -58,7 +66,7 @@ if "chain" not in st.session_state:
                 HumanMessagePromptTemplate.from_template(
                     template="{history}\nПользователь: {input}",
                     input_variables=["input", "history"],
-                )
+                ),
             ]
         ),
         verbose=True,
